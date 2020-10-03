@@ -7,7 +7,7 @@ import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import SignInAndSignUp from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import Header from './components/header/header.component';
-import { auth } from './firebase/firebase.utils'; // Import User Authentication. We want to store the authentication in App.js so that we can pass it to any component that needs it.
+import { auth, createUserProfileDocument } from './firebase/firebase.utils'; // Import User Authentication. We want to store the authentication in App.js so that we can pass it to any component that needs it.
 
 class App extends React.Component {
   constructor(){
@@ -22,10 +22,9 @@ class App extends React.Component {
 
   componentDidMount () {
     // Opens a constant connection of the user to the session as long as the application is running.
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(user => {
-      this.setState( {currentUser: user });
-
-      console.log(user)
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async user => {
+      createUserProfileDocument(user);
+      // this.setState( {currentUser: user });
     });
   }
 

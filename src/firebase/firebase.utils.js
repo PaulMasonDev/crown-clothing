@@ -14,6 +14,33 @@ const config = {
   messagingSenderId: "28248142235",
   appId: "1:28248142235:web:6a5752019e49c53367713e",
   measurementId: "G-FX5VNQW1BF"
+};
+
+export const createUserProfileDocument = async (userAuth, additionalData) => {
+  if(!userAuth) return;
+
+  const userRef = firestore.doc(`users/${userAuth.uid}`);
+
+  const snapShot = await userRef.get();
+
+  console.log(snapShot);
+
+  if(!snapShot.exists) {
+    const { displayName, email } = userAuth;
+    const createdAt = new Date();
+
+    try {
+      await userRef.set({ // Create method of CRUD for firebase
+        displayName,
+        email,
+        createdAt,
+        ...additionalData
+      })
+    } catch (error) {
+      console.log('error creating user', error.message);
+    }
+  }
+  return userRef;
 }
 
 firebase.initializeApp(config); // Initializes firebase with the object data
